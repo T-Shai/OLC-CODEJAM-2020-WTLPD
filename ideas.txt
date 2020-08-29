@@ -1,0 +1,7 @@
+IDEAS 
+
+Theme : " the great machine "
+
+1 ) a machine that upgrades itself when collecting parts
+
+2 ) genetic algorithm with machines ?
