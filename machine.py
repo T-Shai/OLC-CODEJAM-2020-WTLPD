@@ -35,7 +35,6 @@ class Status(NamedTuple):
     # temperature
     temperature : float     # current temperature
     maxTemp : float         # maximum temparature before overheat
-    isOverHeat : bool       # if true machine will slow down
 
     # mass
     machineMass : float            # mass of the machine
@@ -59,10 +58,7 @@ class Machine(gameObject):
         Machine.machines.append(self)
     
     def update(self):
-        self.rect.x += random.randint(0,1)
-        self.rect.y += random.randint(0,1)
-        self.rect.x -= random.randint(0,1)
-        self.rect.y -= random.randint(0,1)
+        pass
 
     def createMachine( 
                     x : int,
@@ -78,7 +74,6 @@ class Machine(gameObject):
                     speedPerPower : float,
                     temperature : float,
                     maxTemp : float,
-                    isOverHeat : bool,
                     machineMass : float,
                     fuelMass : float,
                     fuelMassPerFuel : float):
@@ -92,7 +87,6 @@ class Machine(gameObject):
                     speedPerPower,
                     temperature,
                     maxTemp,
-                    isOverHeat,
                     machineMass,
                     fuelMass,
                     fuelMassPerFuel)
@@ -142,7 +136,6 @@ class Machine(gameObject):
 
         temperature = 0.0
 
-        isOverHeat = False
 
         fuelMass = fuel * fuelMassPerFuel
 
@@ -159,7 +152,6 @@ class Machine(gameObject):
                     speedPerPower,
                     temperature,
                     maxTemp,
-                    isOverHeat,
                     machineMass,
                     fuelMass,
                     fuelMassPerFuel

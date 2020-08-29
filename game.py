@@ -16,8 +16,6 @@ class Game(Window):
     def update(self):
         for m in Machine.machines:
             m.update()
-        
-        print(self.getFPS(), self.getDeltaTime())
 
     def draw(self):
         for m in Machine.machines:
