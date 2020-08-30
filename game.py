@@ -3,6 +3,7 @@ import pygame as pg
 
 from window import *
 from machine import *
+from ga import *
 
 class Game(Window):
 
@@ -10,17 +11,20 @@ class Game(Window):
         super().__init__( name, width, height, icon )
 
         # SETUP
-        for _ in range(10):
-            Machine.createRandomStatusMachine(width, height)
+        # reward 
+        Machine.rewards.append(Reward(width/2, height/2, 25, 25, "red", self))
+        
+        self.gen = GA(80, 0.01, self)
+        
+        
+        
         
     def update(self):
-        for m in Machine.machines:
-            m.update()
+        self.gen.update()
+        
 
     def draw(self):
-        for m in Machine.machines:
-            m.draw(self.getScreen())
-
+        self.gen.draw()
 
 if __name__ == "__main__":
     
@@ -28,11 +32,11 @@ if __name__ == "__main__":
     wTitle = "OLC CODEJAM 2020 - SAI#8680"
     fillColor = "black"
     WIDTH = 1200
-    HEIGHT = int(WIDTH * 9 / 16)
+    HEIGHT = 600
     
     # game 
     g = Game(wTitle, WIDTH, HEIGHT)
     g.setFillColor(name=fillColor)
-    g.setFPS(30)
+    g.setFPS(60)
 
     g.loop()
