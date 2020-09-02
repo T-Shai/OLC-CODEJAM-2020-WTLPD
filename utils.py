@@ -1,7 +1,6 @@
-import math
+# -*- coding: utf-8 -*-
+import pygame as pg
 
-def sign(x):
-  return math.copysign(1, x)
 
-def getAttributes(cls):   
-  return [i for i in cls.__dict__.keys() if i[:1] != '_']
+def loadImage(l):
+    return pg.image.load(l).convert_alpha()

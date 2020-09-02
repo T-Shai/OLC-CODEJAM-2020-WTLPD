@@ -1,64 +1,66 @@
-from machine import *
+# -*- coding: utf-8 -*
+from square import *
+
 
 class GA:
 
-    def __init__(self, popSize, mutChance, game):
-
+    generationTime = 10e3
+    MIN_POPSIZE = 5
+    def __init__(self, x : float, y: float, popSize :int, mutChance: float, window : Window):
+        
+        self.startPos = (x, y)
+        if popSize < GA.MIN_POPSIZE:
+            popSize = GA.MIN_POPSIZE
         self.popSize = popSize
-        self.mutChance = mutChance
+        self.muChance = mutChance
+        
+        self.window = window
+
+        # create population
+        self.population = [Machine(x, y, window) for _ in range(popSize)]
+
+
         self.timer = 0
-        self.game = game
-        
-        for _ in range(popSize):
-            Machine.createRandomStatusMachine(game)
-        
-        self.population = Machine.machines.copy()
+
         self.nGen = 0
 
-    def update(self):
-        for m in Machine.machines:
-            m.update()
-        
-        self.timer += self.game.getDeltaTime()
-
-        if not Machine.machines or self.timer > 8000: # empty
-            self.timer = 0
-            self.normaliseFitness()
-            self.nextGen()
-
-    def draw(self):
-        for m in Machine.machines:
-            m.draw()
-        Machine.drawReward()
-
-    def normaliseFitness(self):
-        totalFitness = 0
-        for m in self.population:
-            totalFitness += m.fitness
-        if totalFitness == 0:
-            totalFitness = 1
-        for m in self.population:
-            m.fitness /= totalFitness
-
-    def pickOne(self):
-        indx = 0
-        r = random.random()
-        while(r > 0):
-            r = r - self.population[indx].fitness
-            indx += 1
-        return self.population[indx-1]
+    
+    def SortByFitness(self):
+        self.population.sort(key=lambda x: x.fitness/self.timer, reverse=True)
+        self.population = self.population[ :GA.MIN_POPSIZE]
     
     def nextGen(self):
+        self.SortByFitness()
         newPop = list()
-
         for _ in range(self.popSize):
-            child = self.pickOne().getClone()
-            child.isAlive = True
-            child.mutate(self.mutChance)
+            child = random.choice(self.population).getClone(self.startPos)
+            if random.random() < self.muChance:
+                child.mutate()
             newPop.append(child)
         
         self.population = newPop
-        Machine.machines = self.population
         self.nGen += 1
-            
-            
+
+
+    def update(self):
+        dt = self.window.getDeltaTime()
+        self.timer += dt
+
+        for indv in self.population:
+            indv.update()
+
+        if self.timer > GA.generationTime:
+            self.nextGen()
+            self.timer = 0
+    
+    def drawPopulation(self):
+        for indv in self.population:
+            indv.draw()
+
+    @staticmethod
+    def addReward(x, y, window):
+        Machine.rewards.append(Reward(x, y, window))
+
+    def drawReward(self):
+        for rew in Machine.rewards:
+            rew.draw()

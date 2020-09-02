@@ -15,8 +15,6 @@ class Window():
     """
     def __init__(self, name, width, height, icon = None):
 
-        pygameInit()
-
         # initialising
         self._width = width
         self._height = height
@@ -108,7 +106,7 @@ class Window():
             self._screen.fill(self._fillColor)
 
             # Events
-            pg.key.set_repeat(1, 10)
+            pg.key.set_repeat(1, 100)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     self._running = False
@@ -120,6 +118,17 @@ class Window():
             # end of while loop
 
         pg.quit()
+    
+class WindowObject:
+
+    def __init__(self, window):
+        self.window = window
+    
+    def update(self):
+        NotImplementedError("Overwrite update from the windowObject !")
+
+    def draw(self):
+        NotImplementedError("Overwrite draw from the windowObject !")
 
 
 if __name__ == "__main__":
