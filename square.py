@@ -6,11 +6,11 @@ import math
 from window import *
 from utils import *
 
+
 pygameInit()
 
 class Reward(WindowObject):
     IMAGES = list()
-
     def __init__(self, x :float, y :float, window: Window):
         super().__init__(window)
         if Reward.IMAGES == list():
@@ -32,20 +32,45 @@ class Reward(WindowObject):
     def loadImage():
         Reward.IMAGES = [loadImage("rsc/reward_1.png")]
     
+class Obstacle(WindowObject):
+
+    def __init__(self, x, y, w, h, window: Window):
+        super().__init__(window)
+        self.surface = pg.Surface((int(w), int(h)))
+        self.surface.fill((0,0,0))
+        self.pos = [x ,y]
+        self.w = w
+        self.h = h
+    
+    def draw(self):
+        self.window.getScreen().blit(self.surface, (self.pos[0], self.pos[1]))
+    
+    def getRect(self):
+        r = self.surface.get_rect()
+        r.x = self.pos[0]
+        r.y = self.pos[1]
+        return r
+
 class Machine(WindowObject):
     
+    NAMES = ["Billy", "David", "Sai", "Coder", "Elsa", "Mickey", "Armstrong", "Paul", "Paris", "Steven", "Emma", "Lisa", "John", "Joe", "Edward", "Elisabeth", "Emmanuel", "Brigitte", "Sarah", "Nicolas", "Francois"]
+    FAMILY_NAME = ["The lone Coder", "John", "Doe", "Simpsons", "The python programmer", "The c++ programmer", "The legend", "i forgot my family name", "The rusher", "The Terminator", "Connor", "A Skynet operator", "An advance AI", "Javidx's clone"]
     IMAGES = list()
     MOVES = ["up", "down", "right", "left", "stay"]
-    SPEED = 0.3
+    SPEED = 0.4
     N_COMMAND = 100
     rewards = list()
+    obstacles = list()
     perceptionRadius = 20
+
+    nTeleported = 0
 
     def __init__(self, x :float, y :float, window: Window):
         super().__init__(window)
         if Machine.IMAGES == list():
             Machine.loadImages()
 
+        self.name = random.choice(Machine.NAMES) + ", " + (random.choice(Machine.FAMILY_NAME).upper())
         self.image = random.choice(Machine.IMAGES).copy()
         rgb = random.randint(0, 150),random.randint(0, 150),random.randint(0, 150)
         self.image.fill(rgb, special_flags = pg.BLEND_MAX)
@@ -57,6 +82,8 @@ class Machine(WindowObject):
         self.algorithm = Machine.createRandomAlgorithm()
 
         self.fitness = 0
+
+        self.isTeleported = False
     
     def reset(self, x, y):
         self.rect.centerx = x
@@ -74,43 +101,56 @@ class Machine(WindowObject):
         return lr
 
     def move(self, direction, dt):
-        alea = random.uniform(0.01, 1)
+
         if direction == "up":
-            self.rect.centery -= Machine.SPEED * dt + alea
+            self.rect.centery -= Machine.SPEED * dt 
 
         elif direction == "down" :
-            self.rect.centery += Machine.SPEED * dt + alea
+            self.rect.centery += Machine.SPEED * dt
         
         elif direction == "right" :
-            self.rect.centerx += Machine.SPEED * dt + alea
+            self.rect.centerx += Machine.SPEED * dt
 
         elif direction == "left" :
-            self.rect.centerx -= Machine.SPEED * dt + alea
+            self.rect.centerx -= Machine.SPEED * dt
         
         else :
             return
 
     def update(self):
-        dt = self.window.getDeltaTime()
+        if self.isTeleported:
+            return
+
+        for obs in Machine.obstacles:
+            if self.rect.colliderect(obs.getRect()):
+                self.fitness = -1
+                return
+
+        d = self.getClosestReward()
+        if d < self.rect.w + Machine.perceptionRadius:
+            self.fitness *= 2
+            if not self.isTeleported:
+                Machine.nTeleported += 1
+                self.isTeleported = True
+            return
+
+        dt = 27.1
         self.move(self.algorithm[self.nCommand], dt)
         self.nCommand += 1
 
         if self.nCommand == Machine.N_COMMAND:
             self.nCommand = 0
         
-        d = self.getClosestReward()
-
-        if d < self.rect.w:
-            self.fitness *= 10
-            return
+        
 
         self.fitness = max(self.fitness, 1/(d + 1 ) )
 
         
     
     def draw(self):
-        s = self.window.getScreen()
-        s.blit(self.image, self.rect)
+        if not self.isTeleported:
+            s = self.window.getScreen()
+            s.blit(self.image, self.rect)
 
     
     # GA STUFF
@@ -121,8 +161,15 @@ class Machine(WindowObject):
         return m
     
     def mutate(self):
+        rgb = random.randint(0, 150),random.randint(0, 150),random.randint(0, 150)
+        self.image.fill(rgb, special_flags = pg.BLEND_MAX)
         indx = random.randint(0, Machine.N_COMMAND -1)
-        self.algorithm[indx] = random.choice(Machine.MOVES)
+        move = random.choice(Machine.MOVES)
+
+        while move == self.algorithm[indx]:
+            move = random.choice(Machine.MOVES)
+
+        self.algorithm[indx] = move
 
     # REWARDS
     def distanceTo(self, other):
@@ -140,6 +187,8 @@ class Machine(WindowObject):
                     closestM = m
 
         return distance
+    
+    
     
     
     @staticmethod

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import pygame as pg
-
+import utils
 def pygameInit():
     # centering screen 
     os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -24,7 +24,7 @@ class Window():
         pg.display.set_caption(self._name) 
 
         if icon is not None:
-            pg.display.set_icon(icon) # setting icon if provided 
+            pg.display.set_icon(utils.loadImage(icon)) # setting icon if provided 
 
         self._clock = pg.time.Clock()
         self._dt = 0
@@ -104,12 +104,6 @@ class Window():
             self._dt = self._clock.tick(self._FPS)
             # Filling screen
             self._screen.fill(self._fillColor)
-
-            # Events
-            pg.key.set_repeat(1, 100)
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    self._running = False
             
             self.update()
             self.draw()

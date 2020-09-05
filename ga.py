@@ -5,7 +5,7 @@ from square import *
 class GA:
 
     generationTime = 10e3
-    MIN_POPSIZE = 5
+    MIN_POPSIZE = 50
     def __init__(self, x : float, y: float, popSize :int, mutChance: float, window : Window):
         
         self.startPos = (x, y)
@@ -24,6 +24,8 @@ class GA:
 
         self.nGen = 0
 
+        
+
     
     def SortByFitness(self):
         self.population.sort(key=lambda x: x.fitness/self.timer, reverse=True)
@@ -40,11 +42,11 @@ class GA:
         
         self.population = newPop
         self.nGen += 1
+        Machine.nTeleported = 0
 
 
     def update(self):
-        dt = self.window.getDeltaTime()
-        self.timer += dt
+        self.timer += 15
 
         for indv in self.population:
             indv.update()
@@ -60,7 +62,15 @@ class GA:
     @staticmethod
     def addReward(x, y, window):
         Machine.rewards.append(Reward(x, y, window))
+    
+    @staticmethod
+    def addObstacle(x, y, window):
+        Machine.obstacles.append(Obstacle(x, y, 50, 10, window))
 
     def drawReward(self):
         for rew in Machine.rewards:
             rew.draw()
+    
+    def drawObstacle(self):
+        for obs in Machine.obstacles:
+            obs.draw()
