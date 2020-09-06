@@ -1,7 +1,11 @@
 # OLC-CODEJAM-2020
 <h4>GAME DEMO:</h4>
 
-[![DEMO](https://img.youtube.com/vi/sRCCZsBqHIo/hqdefault.jpg)](https://www.youtube.com/watch?v=sRCCZsBqHIo)
+
+<p Click on the banner for a demoo video</p>
+
+
+[![Click me](https://github.com/T-Shai/OLC-CODEJAM-2020-WTLPD/blob/master/rsc/banner.png)](https://www.youtube.com/watch?v=sRCCZsBqHIo)
 
 <p class="text-center"><br></p>
 <h4>HOW TO LAUNCH:</h4>
