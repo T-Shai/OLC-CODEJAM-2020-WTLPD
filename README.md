@@ -11,7 +11,7 @@ Click on the banner for a demo video
 <h4>HOW TO LAUNCH:</h4>
 <p></p>
 <h6 class="text-center">Download binary for windows 10 :</h6>
-<ol class="text-center"><li class="text-center">Download the zip file&nbsp;</li><li class="text-center">Unzip it, you should get an executable and a resource folder</li><li class="text-center">Keep them in the same folder or it won't work !</li><li class="text-center">Launch the executable!</li></ol>
+<ol class="text-center"><li class="text-center">Download the zip file&nbsp;</li><li class="text-center">Unzip it, you should get an executable and a resource folder</li><li class="text-center">Keep them in the same folder or it won't work !</li><li class="text-center">Launch the executable!</li></ol><li class="text-center"><a href="https://t-shai.itch.io/wtlpd" target="_blank"> Click here to download the windows 10 executable on the Itch.io page</a></li>
 <p><br></p>
 <h6 class="text-center">Clone the repository on GitHub :</h6>
 <ol class="text-center"><li class="text-center">you are on it so...</li></ol>
